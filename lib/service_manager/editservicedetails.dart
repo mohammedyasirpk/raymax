@@ -97,12 +97,12 @@ Future<bool?> judgeSubmitConfirmBottomSheet(
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                 child: TextFormField(
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  initialValue: (complaintData.servicecharges ?? 0).toString(),
                   decoration: textFieldDecoration(
                     hint: 'Service Charges',
                     label: 'Service Charges',
                   ),
                   onChanged: (value) {
+
                     complaintData.servicecharges = int.tryParse(value) ?? 0;
                   },
                 ),

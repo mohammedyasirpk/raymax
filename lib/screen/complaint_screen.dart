@@ -179,8 +179,13 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                   if (_areFieldsValid()) {
                     final productDataForThisQrid =
                         await FirestoreServices().getproductbyqrcode(qrcode!);
-                    if (productDataForThisQrid == null) {
+                    if (productDataForThisQrid == null ) {
                       showsnackbar("Qr ID is Not Valid", context,SnackbarCondition.failure);
+                      return;
+                    }
+                    
+                    if(productDataForThisQrid.purchaseDateTime == null){
+                      showsnackbar("This Product Not Sold Yet", context, SnackbarCondition.failure);
                       return;
                     }
                     ComplaintModel complaintModel = ComplaintModel(

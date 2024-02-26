@@ -20,6 +20,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../customerr_screen/helper/getGraphvalue.dart';
 import '../servicess/firebaseMessage/send_notification.dart';
 
+
+
+
 class ServieViewScreen extends StatefulWidget {
   const ServieViewScreen({
     Key? key,
@@ -44,6 +47,8 @@ class _ServiceScreenState extends State<ServieViewScreen> {
   int value = 10;
 
   ComplaintModel? complaint;
+
+   
   
 
 
@@ -104,7 +109,7 @@ class _ServiceScreenState extends State<ServieViewScreen> {
                     ],
                   );
                 }
-                if (snapshot.hasError) {
+                if (snapshot.hasError ) {
                   return Text('Error: ${snapshot.error}');
                 }
 
@@ -243,11 +248,15 @@ class _ServiceScreenState extends State<ServieViewScreen> {
                                           ),
                                           enabled: widget.userData?.role !=
                                               "technician",
-                                          onSelected: (UserModel technician) {
-                                            FirestoreServices()
+                                          onSelected: (UserModel technician) async {
+                                           await FirestoreServices()
                                                 .changeTechnicianfromcomplaint(
                                                     complaintdata.id!,
                                                     technician);
+
+                                                  
+                                                  
+                                                   
                                             sendFcmMessage(
                                                 token:
                                                     technician.notification ??
@@ -266,7 +275,7 @@ class _ServiceScreenState extends State<ServieViewScreen> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(technician.name ?? ""),
+                                                    Text(technician.name),
                                                     Divider(),
                                                   ],
                                                 ),
@@ -1463,10 +1472,7 @@ class _ServiceScreenState extends State<ServieViewScreen> {
                           child: ExpansionTile(
                             maintainState: true,
                             onExpansionChanged: (value) {
-                              // if (value == true) {
-                              //   servicehistoryfuture = FirestoreServices()
-                              //       .serviceHistory(complaintdata);
-                              // }
+                            
                             },
                             tilePadding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 5),

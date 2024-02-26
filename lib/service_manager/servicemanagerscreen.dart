@@ -398,7 +398,7 @@ class _ServiceManagerDashboardState extends State<ServiceManagerDashboard> {
       floatingActionButton:
           SpeedDial(backgroundColor: kbyoncolor3, icon: Icons.add, children: [
         SpeedDialChild(
-          child: const Icon(Icons.graphic_eq_outlined),
+          child: const Icon(Icons.miscellaneous_services),
           label: "Add Service",
           onTap: () async {
             Navigator.push(

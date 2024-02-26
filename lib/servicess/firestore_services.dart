@@ -315,6 +315,9 @@ class FirestoreServices {
     });
   }
 
+
+  //assing new technician for that complaint
+
   Future changeTechnicianfromcomplaint(
       String complaintId, UserModel technician) async {
     await FirebaseFirestore.instance
@@ -325,7 +328,7 @@ class FirestoreServices {
       "technicianId": technician.uid
     });
   }
-
+//updating service status
   Future<List<UserModel>> changeStatus(
       String complaintId, String status, Timestamp closedDate) async {
     if (status == 'closed') {
@@ -351,11 +354,14 @@ class FirestoreServices {
       "productId": complaintData.productData?.docId,
       "complaints": complaintData.complaints,
       "component": complaintData.component,
-      "servicecharges": complaintData.servicecharges,
+      "servicecharges": complaintData.servicecharges ?? 0,
       "status": complaintData.status
     });
   }
 
+
+
+//service manager checking avalaible technicians
   Future<List<UserModel>> availableServiceTechnician() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -400,10 +406,10 @@ class FirestoreServices {
     return complaintList;
   }
 
-  Future<ProductModel?> getproductbyqrcode(String productId) async {
+  Future<ProductModel?> getproductbyqrcode(String qrCode) async {
     var itemsData = await _fireStore
         .collection('items')
-        .where('qrCode', isEqualTo: productId)
+        .where('qrCode', isEqualTo: qrCode)
         .get();
     if (itemsData.docs.isNotEmpty) {
       return ProductModel.fromMap(
@@ -414,21 +420,21 @@ class FirestoreServices {
 
   Future editcomplaintproductdetails(
       ProductModel productData, String complalaintId) async {
-    await _fireStore.collection('complaints').doc(complalaintId).set({
+    await _fireStore.collection('complaints').doc(complalaintId).update({
       "dealerName": productData.dealerName,
       "dealerId": productData.dealerId,
       "qrCode": productData.qrId,
 
-      //"colours": productData.colours,
+      
       "productName": productData.productName,
       "modelName": productData.modalName,
       "warranty": productData.warranty,
       "additionalwarranty": productData.additionalWarranty,
       "productionDate": productData.productionDate,
       "purchaseDate": productData.purchaseDateTime
-    }, SetOptions(merge: true));
+    }, );
   }
-
+   // dealer adding warrenty means it sold 
   Future startWarranty(UserModel? userModel, ProductModel productData) async {
     await _fireStore.collection('items').doc(productData.docId).update({
       "dealerName": userModel?.name,
@@ -436,7 +442,7 @@ class FirestoreServices {
       "purchaseDate": Timestamp.now()
     });
   }
-
+// admin adding product to ourproducts
   Future addOurProduct({required ProductModel productModel}) async {
     try {
       await _fireStore.collection("ourProduct").doc(productModel.docId).set({

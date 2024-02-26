@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_typing_uninitialized_variables, prefer_const_constructors, unused_local_variable, avoid_print, prefer_const_declarations, body_might_complete_normally_nullable
 import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'dart:math' as math;
 import 'package:printing/printing.dart';
 import '../../../models/product_model_class.dart';
 
@@ -39,6 +37,7 @@ Future<Uint8List> printWinnersListPdf(context,
     {required ProductModel productData,
     required String modelName,
     required int productionIdStartAt,
+    required int mrp,
     required int count}) async {
   var pdf = pw.Document();
 
@@ -46,6 +45,11 @@ Future<Uint8List> printWinnersListPdf(context,
   // Convert ByteData to Uint8List
   final imageUint8List = imageByteData.buffer
       .asUint8List(imageByteData.offsetInBytes, imageByteData.lengthInBytes);
+
+  final imageByteData1 = await rootBundle.load('images/price.png');
+  // Convert ByteData to Uint8List
+  final imageUint8List1 = imageByteData1.buffer
+      .asUint8List(imageByteData1.offsetInBytes, imageByteData1.lengthInBytes);
 
   final font = await PdfGoogleFonts.leagueGothicRegular();
   final font1 = await PdfGoogleFonts.moulpaliRegular();
@@ -63,93 +67,124 @@ Future<Uint8List> printWinnersListPdf(context,
 
   pdf.addPage(
     pw.Page(
-        pageFormat:
-            PdfPageFormat(80 * mm, double.infinity, marginAll: 0.15 * mm),
+        pageFormat: PdfPageFormat(
+          9 * cm,
+          double.infinity,
+        ),
         build: (pw.Context context) {
-          return pw.ListView.builder(
-              itemCount: count,
-              itemBuilder: (context, index) {
-                return pw.Transform.rotate(
-                  child: pw.Container(
-                    child: pw.Column(
-                      children: [
-                        pw.SizedBox(
-                          height: 5,
-                        ),
-                        pw.Text(productData.productName ?? 'Not Available',
-                            style: pw.TextStyle(
-                              fontSize: 20,
-                              font: font,
-                            )),
-                        pw.SizedBox(
-                          height: 5,
-                        ),
-                        pw.Container(
-                          height: 20,
-                          decoration: pw.BoxDecoration(
-                              color: greyColor,
-                              borderRadius: pw.BorderRadius.circular(3)),
-                          child: pw.Padding(
-                            padding: pw.EdgeInsets.only(left: 5, right: 5),
-                            child: pw.Row(
+          List<int> serialNo = [];
+          for (var i = 0; i < count; i++) {
+            serialNo.add(i);
+          }
+          return pw.Column(
+              children: serialNo
+                  .map((e) => pw.Container(
+                        margin: pw.EdgeInsets.only(bottom: 3 * mm),
+                        padding: pw.EdgeInsets.all(4 * mm),
+                        height: 6 * cm,
+                        width: 9 * cm,
+                        child: pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.center,
+                          children: [
+                            pw.SizedBox(
+                              width: 5,
+                            ),
+                            pw.Transform.rotateBox(
+                              angle: 3.14 / 2,
+                              child: pw.Text(
+                                  productData.productName ?? 'Not Available',
+                                  style: pw.TextStyle(
+                                    fontSize: 17,
+                                    font: font,
+                                  )),
+                            ),
+                            pw.SizedBox(
+                              width: 5,
+                            ),
+                            pw.Container(
+                              height: 120,
+                              decoration: pw.BoxDecoration(
+                                  color: greyColor,
+                                  borderRadius: pw.BorderRadius.circular(3)),
+                              child: pw.Column(
+                                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                                mainAxisAlignment: pw.MainAxisAlignment.end,
+                                children: [
+                                  pw.Transform.rotateBox(
+                                    angle: 3.14 / 2,
+                                    child: pw.Text(modelName,
+                                        style: pw.TextStyle(
+                                            fontSize: 10, font: font1)),
+                                  ),
+                                  pw.Transform.rotateBox(
+                                    angle: 3.14 / 2,
+                                    child: pw.Text('   Model Name : ',
+                                        style: pw.TextStyle(
+                                            fontSize: 10, font: font1)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            pw.SizedBox(
+                              width: 25,
+                            ),
+                            pw.BarcodeWidget(
+                                height: 70,
+                                width: 70,
+                                barcode: pw.Barcode.qrCode(),
+                                data: "${productionIdStartAt + e}",
+                                textStyle: pw.TextStyle(fontSize: 24)),
+                            pw.SizedBox(
+                              width: 5,
+                            ),
+                            pw.Column(
+                              mainAxisSize: pw.MainAxisSize.min,
+                              mainAxisAlignment: pw.MainAxisAlignment.center,
                               children: [
-                                pw.Text('Model Name  ',
-                                    style: pw.TextStyle(
-                                        fontSize: 10, font: font1)),
-                                pw.Text(modelName,
-                                    style: pw.TextStyle(
-                                        fontSize: 10, font: font1)),
+                                pw.Transform.rotateBox(
+                                  angle: 3.14 / 2,
+                                  child: pw.Text("${productionIdStartAt + e}",
+                                      style: pw.TextStyle(
+                                          fontSize: 7, font: font1)),
+                                ),
+                                pw.Transform.rotateBox(
+                                  angle: 3.14 / 2,
+                                  child: pw.Text('Serial no : ',
+                                      style: pw.TextStyle(
+                                          fontSize: 7, font: font1)),
+                                ),
                               ],
                             ),
-                          ),
-                        ),
-                        pw.SizedBox(
-                          height: 20,
-                        ),
-                        pw.Row(
-                            mainAxisAlignment: pw.MainAxisAlignment.center,
-                            children: [
-                              pw.BarcodeWidget(
-                                  height: 80,
-                                  width: 80,
-                                  barcode: pw.Barcode.qrCode(),
-                                  data: "${productionIdStartAt + 0}",
-                                  textStyle: pw.TextStyle(fontSize: 24)),
-                            ]),
-                        pw.SizedBox(
-                          height: 5,
-                        ),
-                        pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.center,
-                          children: [
-                            pw.Text('Serial no : ',
-                                style: pw.TextStyle(fontSize: 7, font: font1)),
-                            pw.Text("${productionIdStartAt + 0}",
-                                style: pw.TextStyle(fontSize: 7, font: font1)),
+                            pw.Column(
+                              mainAxisSize: pw.MainAxisSize.min,
+                              mainAxisAlignment: pw.MainAxisAlignment.center,
+                              children: [
+                                pw.Transform.rotateBox(
+                                  angle: 3.14 / 2,
+                                  child: pw.Text("${mrp + 0}",
+                                      style: pw.TextStyle(
+                                          fontSize: 12, font: font3)),
+                                ),
+                                pw.Transform.rotateBox(
+                                  angle: 3.14 / 2,
+                                  child: pw.Image(
+                                      pw.MemoryImage(imageUint8List1),
+                                      height: 10,
+                                      width: 10),
+                                )
+                              ],
+                            ),
+                            pw.Transform.rotateBox(
+                              angle: 3.14 / 2,
+                              child: pw.Image(pw.MemoryImage(imageUint8List),
+                                  height: 50, width: 140),
+                            )
                           ],
                         ),
-                        pw.SizedBox(
-                          height: 5,
-                        ),
-                        pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.center,
-                          children: [
-                            pw.Image(pw.MemoryImage(imageUint8List),
-                                height: 50, width: 140),
-                          ],
-                        ),
-                        pw.SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-                  angle: 45 * math.pi / 90,
-                );
-              });
+                      ))
+                  .toList());
         }),
   );
-
   return await pdf.save();
 }
 
@@ -157,7 +192,8 @@ Future<String> shareWinnersListPdf(context,
     {required ProductModel productData,
     required String modelName,
     required int productionIdStartAt,
-    required int count}) async {
+    required int count,
+    required int mrp}) async {
   var path;
   late File file;
   Directory directory;
@@ -184,6 +220,7 @@ Future<String> shareWinnersListPdf(context,
     count: count,
     productData: productData,
     productionIdStartAt: productionIdStartAt,
+    mrp: mrp,
   ));
   return file.path;
 }

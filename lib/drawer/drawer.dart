@@ -64,9 +64,9 @@ class _MyDrawerState extends State<MyDrawer> {
                           child: SizedBox(
                             height: 50,
                             width: 50,
-                            child: widget.userdta?.image != null
+                            child: widget.userdta.image != null
                                 ? Image.network(
-                                    widget.userdta?.image ?? '',
+                                    widget.userdta.image ?? '',
                                     fit: BoxFit.fill,
                                   )
                                 : Container(
@@ -94,7 +94,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         children: [
                           Text(
                             capitalizeFirstLetter(
-                                widget.userdta?.name ?? "Not available"),
+                                widget.userdta.name ?? "Not available"),
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -105,7 +105,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           ),
                           Text(
                             capitalizeFirstLetter(
-                              (widget.userdta?.role ?? widget.userdta?.email) ??
+                              (widget.userdta.role ?? widget.userdta.email) ??
                                   "",
                             ),
                             style: const TextStyle(
@@ -117,7 +117,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             height: 5,
                           ),
                           Text(
-                            widget.userdta?.phoneNo ?? "",
+                            widget.userdta.phoneNo ?? "",
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,

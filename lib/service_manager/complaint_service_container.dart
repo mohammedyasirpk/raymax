@@ -8,8 +8,8 @@ import '../models/usermodel.dart';
 import 'ServieViewScreen.dart';
 
 
-class ComplainServiceContainer extends StatelessWidget {
-  const ComplainServiceContainer({
+class ComplainServiceContainer extends StatefulWidget {
+const ComplainServiceContainer({
     Key? key,
     required this.complaint,
     required this.userData
@@ -20,7 +20,20 @@ final UserModel userData;
   final ComplaintModel complaint;
 
   @override
+  State<ComplainServiceContainer> createState() => _ComplainServiceContainerState();
+}
+
+class _ComplainServiceContainerState extends State<ComplainServiceContainer> {
+
+
+
+  @override
   Widget build(BuildContext context) {
+
+  
+
+
+
     return MaterialButton(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
@@ -30,8 +43,8 @@ final UserModel userData;
             context,
             MaterialPageRoute(
               builder: (context) => ServieViewScreen(
-                complaintid: complaint,
-                userData: userData,
+                complaintid: widget.complaint,
+                userData: widget.userData,
                
               ),
             ));
@@ -58,7 +71,7 @@ final UserModel userData;
                     width: 5,
                   ),
                   Text(
-                    complaint.name ?? "",
+                    widget.complaint.name ?? "",
                     style: const TextStyle(
                         color: Color(0xff230304),
                         fontSize: 16,
@@ -77,7 +90,7 @@ final UserModel userData;
                     borderRadius:
                         BorderRadius.only(topRight: Radius.circular(12))),
                 child: Text(
-                  complaint.status ?? "",
+                  widget.complaint.status ?? "",
                   style: const TextStyle(
                       color: Color(0xff59C159),
                       fontSize: 10,
@@ -96,7 +109,7 @@ final UserModel userData;
               const SizedBox(
                 width: 5,
               ),
-              Text(complaint.phoneNo ?? "",
+              Text(widget.complaint.phoneNo ?? "",
                   style: TextStyle(
                     color: const Color(0xff230304).withOpacity(0.7),
                     fontSize: 11,
@@ -143,9 +156,9 @@ final UserModel userData;
                       children: [
                         Expanded(
                           child: Text(
-                            complaint.registerDate != null
+                            widget.complaint.registerDate != null
                                 ? DateFormat('yyyy-MM-dd')
-                                    .format(complaint.registerDate!.toDate())
+                                    .format(widget.complaint.registerDate!.toDate())
                                 : 'Not Available',
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 20, 20, 20),
@@ -206,9 +219,9 @@ final UserModel userData;
                           ),
                           Expanded(
                             child: Text(
-                              complaint.closedDate != null
+                              widget.complaint.closedDate != null
                                   ? DateFormat('yyyy-MM-dd')
-                                      .format(complaint.registerDate!.toDate())
+                                      .format(widget.complaint.registerDate!.toDate())
                                   : 'Not Available',
                               style: const TextStyle(
                                   color: Color.fromARGB(255, 20, 20, 20),
@@ -267,12 +280,12 @@ final UserModel userData;
                         children: [
                           Expanded(
                             child: Text(
-                             complaint.technicianName ?? '',
-                              style: const TextStyle(
-                                  color: Color.fromARGB(255, 20, 20, 20),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500),
-                            ),
+                            widget.complaint.technicianName ?? "Not available",
+                                                          style: const TextStyle(
+                              color: Color.fromARGB(255, 20, 20, 20),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500),
+                                                        ),
                           ),
                         ],
                       ),

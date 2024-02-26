@@ -17,7 +17,6 @@ import '../screen/myproductViewScreen.dart';
 import '../screen/userview_screens.dart/screen_admin_userview.dart.dart';
 import '../service_manager/addservicedetails_screen.dart';
 import '../service_manager/complaint_service_container.dart';
-import '../service_manager/openservices_screen.dart';
 import '../service_manager/qrcodescanningbottomsheet.dart';
 import '../service_manager/servicemanagershimmer.dart';
 import '../service_manager/viewallscreen.dart';
@@ -37,7 +36,7 @@ class ScreenAdmin extends StatelessWidget {
 
   final servicestream = FirebaseFirestore.instance
       .collection("complaints")
-      .orderBy("registerDate",descending: true) 
+      .orderBy("registerDate", descending: true)
       .limit(1)
       .snapshots();
 
@@ -45,38 +44,41 @@ class ScreenAdmin extends StatelessWidget {
       FirebaseFirestore.instance.collection("ourProduct").limit(5).snapshots();
 
   final productStreamAdmin = FirebaseFirestore.instance
-      .collection("items").orderBy("purchaseDate",descending: true).where("purchaseDate",isNull: false)
-   
+      .collection("items")
+      .orderBy("purchaseDate", descending: true)
+      .where("purchaseDate", isNull: false)
       .limit(1)
       .snapshots();
 
   final usersStream = FirebaseFirestore.instance
       .collection("users")
-      .orderBy("registeredDate",descending: true)
+      .orderBy("registeredDate", descending: true)
       .limit(3)
       .snapshots();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       floatingActionButton:
+      floatingActionButton:
           SpeedDial(backgroundColor: kbyoncolor3, icon: Icons.add, children: [
         SpeedDialChild(
-          child: const Icon(Icons.graphic_eq_outlined),
+          child: const Icon(Icons.miscellaneous_services),
           label: "Add Service",
           onTap: () async {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Addservice(
-                      complaintData:
-                          ComplaintModel()),
+                  builder: (context) =>
+                      Addservice(complaintData: ComplaintModel()),
                 ));
           },
         ),
         SpeedDialChild(
           shape: const CircleBorder(side: BorderSide.none),
-          child:  Image.asset("images/qrcodescan.png",width: 20,),
+          child: Image.asset(
+            "images/qrcodescan.png",
+            width: 20,
+          ),
           label: "Scan Product",
           onTap: () async {
             String? qrcode = await FlutterBarcodeScanner.scanBarcode(
@@ -153,16 +155,16 @@ class ScreenAdmin extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LastSaleShimmer();
-                    } 
-                     if (snapshot.hasError) {
+                    }
+                    if (snapshot.hasError) {
                       return Text("Error: ${snapshot.error}");
-                    } 
-                     if (snapshot.data==null||snapshot.data!.docs.isEmpty) {
+                    }
+                    if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
                       return const SizedBox();
                     }
                     final List<ProductModel> listOfproductModel = [];
                     List<QueryDocumentSnapshot<Map<String, dynamic>>>
-                        listOfProducts = snapshot.data?.docs??[];
+                        listOfProducts = snapshot.data?.docs ?? [];
                     for (var item in listOfProducts) {
                       final product = item.data();
 
@@ -178,10 +180,13 @@ class ScreenAdmin extends StatelessWidget {
                       itemCount: 1,
                       itemBuilder: (context, index) {
                         final item = listOfproductModel[index];
-                
+
                         return ProductListTile(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyProductViewScreen(productData: item,userData:userdata ),));
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => MyProductViewScreen(
+                                  productData: item, userData: userdata),
+                            ));
                           },
                           productData: item,
                         );
@@ -206,7 +211,8 @@ class ScreenAdmin extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>  ViewAllScreen(userData:userdata ),
+                                builder: (context) =>
+                                    ViewAllScreen(userData: userdata),
                               ));
                         },
                         child: const Text(
@@ -235,10 +241,9 @@ class ScreenAdmin extends StatelessWidget {
               List<ComplaintModel> complaintList = [];
               for (QueryDocumentSnapshot<Map<String, dynamic>> element
                   in snapshot.data?.docs ?? []) {
-                complaintList
-                    .add(ComplaintModel.fromMap(element.data(), element.id,element.data()["productId"]));
+                complaintList.add(ComplaintModel.fromMap(
+                    element.data(), element.id, element.data()["productId"]));
               }
-
 
               return Column(
                 children: [
@@ -246,22 +251,22 @@ class ScreenAdmin extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: complaintList.isNotEmpty
                         ? ListView.separated(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ComplainServiceContainer(
-                                    userData: userdata,
-                                    complaint: complaintList[index]);
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return const SizedBox(
-                                  height: 10,
-                                );
-                              },
-                              itemCount: complaintList.length,
-                            )
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return ComplainServiceContainer(
+                                  userData: userdata,
+                                  complaint: complaintList[index]);
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(
+                                height: 10,
+                              );
+                            },
+                            itemCount: complaintList.length,
+                          )
                         : const Center(
                             child: Align(
                               alignment: Alignment.center,
@@ -294,7 +299,8 @@ class ScreenAdmin extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  AdminAllOurProducts(userdata: userdata),
+                            builder: (context) =>
+                                AdminAllOurProducts(userdata: userdata),
                           ));
                     },
                     child: const Text(
@@ -313,16 +319,17 @@ class ScreenAdmin extends StatelessWidget {
                 stream: ourProductStreamAdmin,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-
                     return ListView.builder(
-                         padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemCount: 6,
                       itemBuilder: (context, index) {
-                      return OurProductShimmer();
-                    },);
+                        return OurProductShimmer();
+                      },
+                    );
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else if (!snapshot.hasData) {
@@ -334,33 +341,38 @@ class ScreenAdmin extends StatelessWidget {
                   for (var item in listOfProducts) {
                     final product = item.data();
 
-                    final ProductModel model = ProductModel.fromMap(product, item.id);
+                    final ProductModel model =
+                        ProductModel.fromMap(product, item.id);
 
                     listOfproductModel.add(model);
                   }
 
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: listOfproductModel.length,
                     itemBuilder: (context, index) {
                       ProductModel productModel = listOfproductModel[index];
 
-
                       return OurProductTile(
                         onPress: () {
-                           Navigator.push(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => OurProductDetailScreen(productData:productModel ,userData: userdata,),
+                                builder: (context) => OurProductDetailScreen(
+                                  productData: productModel,
+                                  userData: userdata,
+                                ),
                               ));
                         },
                         onLongPress: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddOurProductAdmin(productData: productModel),
+                                builder: (context) => AddOurProductAdmin(
+                                    productData: productModel),
                               ));
                         },
                         productData: productModel,
@@ -429,20 +441,23 @@ class ScreenAdmin extends StatelessWidget {
                     // return UserShimmerContainer();
                     return UserContainer(
                       onTap: () {
-                         Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserDetailsViewScreen(userData: item),
-                              ));
-                        
-                      },
-                      userData: item,onLongPress: () {
                         Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditUserScreen(userData:item ),
-                              ));
-                    },);
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserDetailsViewScreen(userData: item),
+                            ));
+                      },
+                      userData: item,
+                      onLongPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EditUserScreen(userData: item),
+                            ));
+                      },
+                    );
                   },
                 );
               })

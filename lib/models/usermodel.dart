@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  String? name;
+  String  name;
   String? phoneNo;
   String? notification;
   String? employeeId;
@@ -13,7 +13,7 @@ class UserModel {
   Timestamp? registerDate;
 
   UserModel(
-      {this.name,
+      {required this.name,
       this.notification,
       this.registerDate,
       this.phoneNo,

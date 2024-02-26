@@ -1,16 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 class ProductModel {
   String? dealerName;
   String? dealerId;
-
   String? description;
   List<String>? modelList;
   int? additionalWarranty;
-   String? productName;
+  String? productName;
   String? modalName;
+  String? mrp;
   String? colours;
   int? warranty;
   Timestamp? productionDate;
@@ -36,6 +35,7 @@ class ProductModel {
       this.dealerName,
       this.email,
       this.qrId,
+      this.mrp,
       this.imageUrl,
       this.docId});
 
@@ -47,6 +47,7 @@ class ProductModel {
       imageUrl: map["imageUrl"],
       description: map["description"],
       purchaseDateTime: map["purchaseDate"],
+      mrp: map["mrp"],
       qrId: map['qrCode'],
       productName: map['productName'],
       modalName: map['modelName'],
@@ -56,7 +57,6 @@ class ProductModel {
       productionDate: map['productionDate'],
       dealerId: map["dealerId"],
       customername: map['customerName'],
-      
       email: map['email'],
       docId: id,
     );

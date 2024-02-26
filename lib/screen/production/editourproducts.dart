@@ -30,6 +30,9 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
 
   final TextEditingController productmodelController = TextEditingController();
 
+  final List <int> countList = [5, 10, 20, 30, 40];
+
+
   int? selectedCountProduct;
   bool isLoadingPrint = false;
    bool isLoadingShare = false;
@@ -297,6 +300,20 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
                     selectedModel = value;
                   },
                 ),
+                    const SizedBox(
+                  height: 25,
+                ),
+                TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                        controller: mrpController,
+                        decoration: textFieldDecoration(
+                            hint: 'Mrp',
+                            label: 'Mrp'),
+                        onChanged: (value) {},
+                      ),
                 const SizedBox(
                   height: 25,
                 ),
@@ -306,7 +323,7 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp("[0-9\]")),
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                         ],
                         controller: productmodelController,
                         decoration: textFieldDecoration(
@@ -324,7 +341,7 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
                         //  value: selectedProduct,
                         decoration:
                             textFieldDecoration(label: 'Count', hint: 'Count'),
-                        items: [5, 10, 20, 30, 40]
+                        items: countList
                             .map((e) => DropdownMenuItem<int>(
                                 value: e, child: Text(e.toString())))
                             .toList(),
@@ -370,12 +387,15 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
                                   isLoadingShare = true;
                                 });
                                 String? path = await shareWinnersListPdf(
+
                                     context,
                                     modelName: selectedModel ?? "Not Available",
                                     count: selectedCountProduct ?? 0,
                                     productionIdStartAt: int.tryParse(
                                             productmodelController.text) ??
                                         0,
+                                          mrp: int.tryParse(mrpController.text) ??
+                                            0,
                                     productData: widget.productData);
                                 setState(() {
                                   isLoadingShare = false;
@@ -439,6 +459,8 @@ class _AddOurProductProductionState extends State<AddOurProductProduction> {
                                         count: selectedCountProduct ?? 0,
                                         productionIdStartAt: int.tryParse(
                                                 productmodelController.text) ??
+                                            0,
+                                              mrp: int.tryParse(mrpController.text) ??
                                             0,
                                         productData: widget.productData);
 
